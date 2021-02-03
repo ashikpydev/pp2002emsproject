@@ -13,3 +13,15 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
+class LeaveApplication(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cause_of_leave = models.TextField(blank = True, null = True)
+    start_date = models.DateField(blank = True, null = True)
+    end_date = models.DateField(blank = True, null = True)
+    # date = models.DateField(auto_now_add=True, blank = True, null = True)
+
+    def __str__(self):
+        return str(self.user)
+

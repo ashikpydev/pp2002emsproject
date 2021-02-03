@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="col-md-6 m-auto">
+        <form method="POST">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-primary mt-3">Apply</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
