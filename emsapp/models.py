@@ -20,6 +20,9 @@ class LeaveApplication(models.Model):
     cause_of_leave = models.TextField(blank = True, null = True)
     start_date = models.DateField(blank = True, null = True)
     end_date = models.DateField(blank = True, null = True)
+    checked = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
+
     # date = models.DateField(auto_now_add=True, blank = True, null = True)
 
     def __str__(self):

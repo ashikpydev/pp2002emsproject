@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 m-auto pt-3">
+            {% if applications %}
+
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Cause Of Leave</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for application in applications %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ application.user.username }}</td>
+                    <td>{{ application.cause_of_leave }}</td>
+                    <td><a href="{% url 'application_approval' application.id 1 %}"><button class="btn btn-success btn-sm">Accepted</button></a></td>
+                    <td><a href="{% url 'application_approval' application.id 0 %}"><button class="btn btn-danger btn-sm">Rejected</button></a></td>
+                  </tr>
+                  {% endfor %}
+                 
+                  
+                </tbody>
+              </table>
+            {% else %}
+            <div class="alert alert-info">
+                <strong>No Data Is Available To Show!</strong>
+              </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

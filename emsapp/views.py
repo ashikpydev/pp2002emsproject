@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth import login, logout, authenticate
 # Create your views here.
 from .models import *
@@ -12,6 +12,7 @@ def user_login(request):
         user = authenticate(username = username, password = password)
         if user:
             login(request, user)
+            return redirect('/userprofile')
 
     return render(request, 'login.html')
 
@@ -42,8 +43,36 @@ def add_leave_form(request):
             print(3)
             form.save()
             print(5)
-            return HttpResponse("ok")
+            form = LeaveApplicationForm()
+            context = {'msg':'Application Submitted Successfully!','form':form}
+            return render(request, 'add_leave_form.html', context)
     else:
-        form = LeaveApplicationForm()
-        context = {'form':form}
-        return render(request, 'add_leave_form.html', context)
+        user_application =LeaveApplication.objects.filter(checked = False, user = request.user)
+        if user_application:
+            context = {'msg':'You Have Already A Pending Application!'}
+            return render(request, 'add_leave_form.html', context)
+        else:
+            form = LeaveApplicationForm()
+            context = {'form':form}
+            return render(request, 'add_leave_form.html', context)
+    
+    
+
+def all_application(request):
+    applications = LeaveApplication.objects.filter(checked = False)
+    context = {'applications':applications}
+    return render(request, 'all_application.html', context)
+
+
+def application_approval(request, id, sts):
+    application = LeaveApplication.objects.get(id = id)
+    application.checked = True 
+    if sts == 0:
+        application.approved = False 
+        application.save()
+        return redirect('/all-application')
+    else:
+        application.approved = True
+        application.save()
+        return redirect('/all-application')
+    return redirect('/all-application')
