@@ -1,16 +1,29 @@
-<div class="col-md-6">
-    <form method="post">
-    {% csrf_token %}
-      
-        <div class="container">
-          <label for="uname"><b>Username</b></label>
-          <input type="text" placeholder="Enter Username" name="uname" required>
-      
-          <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" name="psw" required>
-      
-          <button type="submit">Login</button>
-          
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <title>Document</title>
+</head>
+<body>
+  <div class="container  mt-5">
+    <div class="col-md-4 m-auto pt-5 bg-light">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="xampleInput">User Name</label>
+          <input type="text" class="form-control" name = 'username' id="username" placeholder="User Name">
         </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" name = 'password' id="exampleInputPassword1" placeholder="Password">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
       </form>
-</div>
+    </div>
+  </div>
+</body>
+</html>

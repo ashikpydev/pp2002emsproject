@@ -5,8 +5,8 @@ from .models import *
 from .forms import *
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['uname']
-        password = request.POST['psw']
+        username = request.POST['username']
+        password = request.POST['password']
         print(username)
         print(password)
         user = authenticate(username = username, password = password)
@@ -76,3 +76,58 @@ def application_approval(request, id, sts):
         application.save()
         return redirect('/all-application')
     return redirect('/all-application')
+
+
+
+def to_do_list(request):
+    my_todo_list_pending = TodoList.objects.filter(user = request.user, pending_status = True)
+    my_todo_list_pending_count = my_todo_list_pending.count()
+    
+    working_todo_list = TodoList.objects.filter(user = request.user, working_status = True, pending_status = False)
+    working_todo_list_count = working_todo_list.count()
+    
+    done_todo_list = TodoList.objects.filter(user = request.user, working_status = False, pending_status = False)
+    done_todo_list_count = done_todo_list.count()
+    
+    form = TodoListForm()
+    
+    context = {'my_todo_list_pending':my_todo_list_pending, "my_todo_list_pending_count":my_todo_list_pending_count,
+               'working_todo_list':working_todo_list, 'working_todo_list_count':working_todo_list_count,
+               'done_todo_list':done_todo_list,
+                'done_todo_list_count':done_todo_list_count,
+                'form':form
+}
+    return render(request, 'todolist.html', context)
+
+
+def todo_list_evaluation(request, id, sts):
+    print(sts)
+    print(id)
+    my_to_list = TodoList.objects.get(id = id)
+    if sts == 'working':
+        my_to_list.working_status = True
+        my_to_list.pending_status = False
+        my_to_list.save()
+        return redirect('/todolist')
+    elif sts == 'done':
+        my_to_list.working_status = False
+        my_to_list.done_status = True
+        my_to_list.save()
+        return redirect('/todolist')
+        
+
+    return redirect('/todolist')
+
+def add_todo_list(request):
+    if request.method == 'POST':
+        form = TodoListForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit = False)
+            form.user = request.user
+            form.save()
+            return redirect('/todolist')
+    
+    
+def user_logout(request):
+    logout(request)
+    return redirect('/')

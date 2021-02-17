@@ -5,3 +5,4 @@ from .models import *
 
 admin.site.register(UserProfile)
 admin.site.register(LeaveApplication)
+admin.site.register(TodoList)
