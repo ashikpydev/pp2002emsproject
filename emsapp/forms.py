@@ -1,5 +1,7 @@
+from django.forms import widgets
 from .models import *
 from django import forms
+from django.contrib.auth.models import User, Group
 
 
 class LeaveApplicationForm(forms.ModelForm):
@@ -23,4 +25,28 @@ class TodoListForm(forms.ModelForm):
         widgets = {
             'what_to_do':forms.TextInput(attrs={'class':'form-group form bg-light col-md-5 p-3'}),
             'when_to_do':forms.DateInput(attrs={'type':'date','class':'p-3 form-group bg-light datepicker form col-md-3'})
+        }
+        
+        
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form rounded form-group col-md-2 mt-3 bg-light', 'placeholder':"Enter Password..."}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form rounded form-group col-md-2 mt-3 bg-light', 'placeholder':"Enter Password Again..."}))
+
+    department = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'rounded form form-group bg-light col-md-5',}), queryset = Department.objects.all())
+    designation = forms.ModelChoiceField(widget=forms.Select(attrs={'class':'rounded form form-group bg-light col-md-5',}), queryset = Group.objects.all())
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'username', 'password', 'confirm_password', 'department', 'designation']
+        help_texts = {
+            'username': None,
+            'email':None,
+            
+        }
+
+        widgets = {
+            'username':forms.TextInput(attrs={'class':'form rounded form-group bg-light col-md-4 mt-3', 'placeholder':"Enter UserName..."}),
+            'email':forms.TextInput(attrs={'class':'form form-control bg-light col-md-12', 'placeholder':"Enter Email..."}),
+            'first_name':forms.TextInput(attrs={'class':'rounded form form-group bg-light col-md-5 mr-3', 'placeholder':"Enter First Name..."}),
+            'last_name':forms.TextInput(attrs={'class':'rounded form form-group bg-light col-md-5', 'placeholder':"Enter Last Name..."}),
+
         }

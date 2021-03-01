@@ -1,5 +1,7 @@
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 from .models import *
 from .forms import *
@@ -20,10 +22,10 @@ def user_profile(request):
     user = request.user
     print(user)
     userprofile = UserProfile.objects.get(user = user)
-    context = {'userprofile':userprofile}
+    context = {'userprofile':userprofile, 'user':user}
     return render(request, 'userprofile.html', context)
 
-
+@login_required(login_url='/')
 def add_leave_form(request):
     if request.method == 'POST':
         print(request.user)
@@ -58,6 +60,7 @@ def add_leave_form(request):
     
     
 
+@login_required(login_url='/')
 def all_application(request):
     applications = LeaveApplication.objects.filter(checked = False)
     context = {'applications':applications}
@@ -131,3 +134,36 @@ def add_todo_list(request):
 def user_logout(request):
     logout(request)
     return redirect('/')
+
+def add_employee(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        if password == confirm_password:
+            department_id = request.POST['department']
+            email = request.POST['email']
+            department = Department.objects.get(id = department_id)
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            
+            designation_id = request.POST['designation']
+            designation = Group.objects.get(id = designation_id)
+            
+            user = User.objects.create_user(username = username, password = password, first_name = first_name, last_name = last_name)
+            profile = UserProfile.objects.create(user = user, department = department, email_address = email, designation = designation.name)
+            form = UserForm()
+            message = "Successfully Added!"
+            status = 'success'
+            context = {'form':form, 'message':message, 'sts':status}
+            return render(request, 'add_employee.html', context)
+        else:
+            form = UserForm()
+            message = "password not matched"
+            status = 'danger'
+            context = {'form':form, 'message':message,'sts':status}
+            return render(request, 'add_employee.html', context)
+    else:
+        form = UserForm()
+        context = {'form':form}
+        return render(request, 'add_employee.html', context)
