@@ -3,13 +3,15 @@ from django.urls import path
 
 from .views import *
 urlpatterns = [
+    path('change-password', change_password, name='change_password'),
     path('logout', user_logout, name='user_logout'),
     path('add-employee', add_employee, name='add_employee'),
     path('add-todo-list', add_todo_list, name='add_todo_list'),
-    
+    path('my-application/', my_application, name='my_application'),
+
     path('', user_login, name='user-login'),
     
-    path('todo-ist-evaluation/<int:id>/<sts>', todo_list_evaluation, name='todo-list-evaluation'),
+    path('todo-ist-evaluation/<int:id>/<int:sts>', todo_list_evaluation, name='todo-list-evaluation'),
 
 
     path('application-approval/<int:id>/<sts>', application_approval, name='application_approval'),

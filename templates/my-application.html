@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-6 m-auto">
+            <button class="btn btn-info">Pending</button>
+            <button class="btn btn-success">Approved</button>
+            <button class="btn btn-danger">Rejected</button>
+            <table class="table mt-5">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Cause Of Leave</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for application in application %}
+                  <tr {% if application.approved == True %} class="btn-success" {% elif application.approved == False and application.checked == True %} class="btn-danger" {% elif application.checked == False %} class="btn-info" {% endif %}>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ application.user.username }}</td>
+                    <td>{{ application.cause_of_leave }}</td>
+                  </tr>
+                  {% endfor %}
+                 
+                  
+                </tbody>
+              </table>
+        </div>
+    </div>
+{% endblock %}

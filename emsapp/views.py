@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 from .models import *
@@ -68,9 +69,11 @@ def all_application(request):
 
 
 def application_approval(request, id, sts):
+    print(sts)
+    print(type(sts))
     application = LeaveApplication.objects.get(id = id)
     application.checked = True 
-    if sts == 0:
+    if int(sts) == 0:
         application.approved = False 
         application.save()
         return redirect('/all-application')
@@ -167,3 +170,42 @@ def add_employee(request):
         form = UserForm()
         context = {'form':form}
         return render(request, 'add_employee.html', context)
+
+def my_application(request):
+    user = request.user
+    application = LeaveApplication.objects.filter(user = user)
+    print(application)
+    context = {'application':application}
+    return render(request, 'my-application.html', context)
+
+def change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST['op']
+        new_password = request.POST['np']
+        retype_password = request.POST['rp']
+        # print(old_password)
+        # print(new_password)
+        # print(retype_password)
+        print(request.user.username)
+        user = authenticate(username = request.user.username, password = old_password)
+        if user:
+            if new_password == retype_password:
+                user = request.user
+                user.set_password(new_password)
+                user.save()
+                message = messages.success(request, 'Password has changed')
+                return redirect('/')
+
+            else:
+                message = 'Password Not Matched!'
+                context = {'message':message}
+                return render(request, 'change_password.html', context)
+        else:
+            message = 'Invalid old Password'
+            context = {'message':message}
+            return render(request, 'change_password.html', context)
+            
+        # print(v)
+        # # if old_password == request.user.password:
+        # #     print("ok")
+    return render(request, 'change_password.html')
