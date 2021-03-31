@@ -1,8 +1,22 @@
+from django.db.models import fields
 from django.forms import widgets
 from .models import *
 from django import forms
 from django.contrib.auth.models import User, Group
 
+class UserProfileForm(forms.ModelForm):
+    department = forms.ModelChoiceField(widget = forms.Select(attrs={'class':'form-control bg-light',}), queryset=Department.objects.all())
+    class Meta:
+        model = UserProfile
+        fields = ['address', 'department', 'designation', 'date_of_birth', 'email_address', 'mobile_number']
+
+        widgets = {
+            'address':forms.TextInput(attrs={'class':'bg-light form form-control'}),
+            'designation':forms.TextInput(attrs={'class':'bg-light form form-control'}),
+            'email_address':forms.TextInput(attrs={'class':'bg-light form form-control'}),
+            'date_of_birth':forms.DateInput(attrs={'type':'date', 'class':'bg-light form form-control'}),
+            'mobile_number':forms.TextInput(attrs={'class':'bg-light form form-control'}),
+        }
 
 class LeaveApplicationForm(forms.ModelForm):
     class Meta:

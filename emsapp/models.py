@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
+class OTP(models.Model):
+    otp = models.CharField(max_length=250)
+    status = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.otp
+    
 class Department(models.Model):
     name = models.CharField(max_length=250)
     

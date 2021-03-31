@@ -16,7 +16,7 @@
                       <h4>{{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</h4>
                       <p class="text-secondary mb-1">{{ profile.department }}</p>
                       <p class="text-muted font-size-sm">{{ userprofile.designation }}</p>
-                      <a href="#"><button class="btn btn-primary">Edit</button></a>
+                      <a href="{% url 'edit' %}"><button class="btn btn-primary">Edit</button></a>
                       <a href="{% url 'change_password' %}"><button class="btn btn-primary">Change passaword</button></a>
 
                     </div>

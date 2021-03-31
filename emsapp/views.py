@@ -2,10 +2,68 @@ from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
+import random
+from.models import *
 
 # Create your views here.
 from .models import *
 from .forms import *
+def edit(request):
+    user = request.user
+    profile = UserProfile.objects.get(user = user)
+    if request.method == 'POST':
+        form = UserProfileForm(instance=profile, data = request.POST)
+        if form.is_valid():
+            form = form.save()
+            return redirect('/userprofile')
+        else:
+            print("not ok")
+    print(profile)
+    form = UserProfileForm(instance=profile)
+    print(form)
+    context = {'form':form}
+    return render(request, 'update.html', context)
+
+
+def reset_password(request):
+    if request.method == 'POST':
+        otp = request.POST['otp']
+        username = request.POST['username']
+        np = request.POST['np']
+        try:
+            otp = OTP.objects.get(otp = otp)
+            if otp.satus == True:
+                try:
+                    user = User.objects.get(username = username)
+                    user.set_password(np)
+                    user.save()
+                    otp.status = False
+                    otp.save()
+                    return redirect('/')
+                except:
+                    context = {'msg':'invalid username'}
+                    return render (request, 'forgot-password-with-otp.html', context)
+            else:
+                context = {'msg':'invalid username'}
+                return render (request, 'forgot-password-with-otp.html', context)
+        except:
+            context = {'msg':'invalid OTP'}
+            
+            return render (request, 'forgot-password-with-otp.html', context)
+    return render (request, 'forgot-password-with-otp.html')
+
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        otp = random.randint(1000,9999)
+        otp = str(otp)
+        OTP.objects.create(otp = otp)
+        print(otp)
+        send_mail('forgot password', otp, 'alhasib097@gmail.com', [email])
+        return render(request, 'forgot-password-with-otp.html')
+    return render(request, 'forgot_password.html')
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -16,6 +74,10 @@ def user_login(request):
         if user:
             login(request, user)
             return redirect('/userprofile')
+        else:
+            messages = "Invalid Username Or Password"
+            context = {'messages':messages}
+            return render(request, 'login.html', context)
 
     return render(request, 'login.html')
 
@@ -193,7 +255,7 @@ def change_password(request):
                 user = request.user
                 user.set_password(new_password)
                 user.save()
-                message = messages.success(request, 'Password has changed')
+                messages = messages.success(request, 'Password has changed')
                 return redirect('/')
 
             else:

@@ -8,29 +8,33 @@
   <title>Document</title>
 </head>
 <body>
-  <div class="container  mt-5">
-    {% if message %}
-      <ul class="messages">
-          {% for message in message %}
-          {{ message.tags }}
-         {{ message }}
-          {% endfor %}
-      </ul>
+  
+  <div class="container mt-5">
+   
+      <div class="row">
+        <div class="col-md-4 m-auto">
+          {% if messages%}
+    <div class="alert alert-danger" role="alert">
+      {{ messages }}
+    </div>
     {% endif %}
-    <div class="col-md-4 m-auto pt-5 bg-light">
-      <form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="xampleInput">User Name</label>
-          <input type="text" class="form-control" name = 'username' id="username" placeholder="User Name">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="xampleInput">User Name</label>
+              <input type="text" class="form-control" name = 'username' id="username" placeholder="User Name">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input type="password" class="form-control" name = 'password' id="exampleInputPassword1" placeholder="Password">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{% url 'forgot-password' %}">Forgot Password?
+            </a>
+          </form>
         </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" name = 'password' id="exampleInputPassword1" placeholder="Password">
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+      </div>
     </div>
   </div>
 </body>
