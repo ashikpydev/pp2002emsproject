@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 import random
 from.models import *
+from django.db.models import Q
 
 # Create your views here.
 from .models import *
@@ -122,12 +123,40 @@ def add_leave_form(request):
             return render(request, 'add_leave_form.html', context)
     
     
+from datetime import datetime
 
 @login_required(login_url='/')
 def all_application(request):
-    applications = LeaveApplication.objects.filter(checked = False)
-    context = {'applications':applications}
-    return render(request, 'all_application.html', context)
+    if request.method == 'POST':
+        search_data = request.POST['sform']
+        s_date = request.POST['sdate']
+        e_date = request.POST['edate']
+        print(search_data)
+        print(s_date)
+        print(e_date)
+
+        try:
+            print(1)
+            user = User.objects.get(username = search_data)
+
+            applications = LeaveApplication.objects.filter(user = user, checked = False)
+            for i in applications:
+                d = datetime.strptime(i.start_date, '%Y/%m/%d')
+                c = d.strftime('%Y/%m/%d')
+                print(c)
+                print(i.start_date)
+
+            context = {'applications':applications}
+            return render(request, 'all_application.html', context)
+        except:
+            msg = "No Data Fount"
+            context = {'msg':msg}
+            return render(request, 'all_application.html', context)
+
+    else:
+        applications = LeaveApplication.objects.filter(checked = False)
+        context = {'applications':applications}
+        return render(request, 'all_application.html', context)
 
 
 def application_approval(request, id, sts):

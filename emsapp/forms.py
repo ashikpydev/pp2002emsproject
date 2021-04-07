@@ -3,6 +3,7 @@ from django.forms import widgets
 from .models import *
 from django import forms
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 
 class UserProfileForm(forms.ModelForm):
     department = forms.ModelChoiceField(widget = forms.Select(attrs={'class':'form-control bg-light',}), queryset=Department.objects.all())
@@ -19,6 +20,7 @@ class UserProfileForm(forms.ModelForm):
         }
 
 class LeaveApplicationForm(forms.ModelForm):
+    
     class Meta:
         model = LeaveApplication
         fields = ['cause_of_leave', 'start_date', 'end_date']
