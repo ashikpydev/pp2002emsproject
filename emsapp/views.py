@@ -65,6 +65,9 @@ def forgot_password(request):
         return render(request, 'forgot-password-with-otp.html')
     return render(request, 'forgot_password.html')
 
+from datetime import datetime
+# from django.utils.timezone import UTC
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -74,6 +77,13 @@ def user_login(request):
         user = authenticate(username = username, password = password)
         if user:
             login(request, user)
+            # now = datetime.now()
+            now = datetime.now()
+            time = now.strftime("%I:%M:%P")
+            print(time)
+            if time > '08:12 PM':
+                
+            # Attendance.objects.create(user = user)
             return redirect('/userprofile')
         else:
             messages = "Invalid Username Or Password"
@@ -139,11 +149,8 @@ def all_application(request):
             print(1)
             user = User.objects.get(username = search_data)
 
-            applications = LeaveApplication.objects.filter(user = user, checked = False)
+            applications = LeaveApplication.objects.filter(user = user, start_date__gte = s_date, checked = False)
             for i in applications:
-                d = datetime.strptime(i.start_date, '%Y/%m/%d')
-                c = d.strftime('%Y/%m/%d')
-                print(c)
                 print(i.start_date)
 
             context = {'applications':applications}
