@@ -5,7 +5,7 @@ from .views import *
 
 urlpatterns = [
     path('edit', edit, name='edit'),
-    
+    path('report', attendance_report, name='report'),
     path('reset-password', reset_password, name='reset-password'),
     
     path('forgot-password', forgot_password, name='forgot-password'),

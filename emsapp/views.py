@@ -65,7 +65,7 @@ def forgot_password(request):
         return render(request, 'forgot-password-with-otp.html')
     return render(request, 'forgot_password.html')
 
-from datetime import datetime
+from datetime import date, datetime
 # from django.utils.timezone import UTC
 
 def user_login(request):
@@ -81,10 +81,13 @@ def user_login(request):
             now = datetime.now()
             time = now.strftime("%I:%M:%P")
             print(time)
-            if time > '08:12 PM':
-                
-            # Attendance.objects.create(user = user)
-            return redirect('/userprofile')
+            if time > '04:20 PM':
+                Attendance.objects.create(user = request.user)
+                # Attendance.objects.create(user = user)
+                return redirect('/userprofile')
+            else:
+                Attendance.objects.create(user = request.user, attendace_status = True)
+                return redirect('/userprofile')
         else:
             messages = "Invalid Username Or Password"
             context = {'messages':messages}
@@ -307,3 +310,27 @@ def change_password(request):
         # # if old_password == request.user.password:
         # #     print("ok")
     return render(request, 'change_password.html')
+
+
+
+def attendance_report(request):
+    if request.method == 'POST':
+        user = request.POST['user']
+        s_date = request.POST['s_date']
+        e_date = request.POST['e_date']
+        print(user)
+        print(s_date)
+        print(e_date)
+        user = User.objects.get(username = user)
+        report = Attendance.objects.filter(user = user)
+        late = 0
+        intime = 0
+        for i in report:
+            if i.attendace_status == False:
+                late = late + 1
+            elif i.attendace_status == True:
+                intime = intime+1
+        print(report)
+        context = {'report':report, 'late':late, 'intime':intime}
+        return render(request, 'report.html', context)
+    return render(request, 'report.html')

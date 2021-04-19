@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-8 m-auto">
+    <form method="POST">
+        {% csrf_token %}
+      <div class="input-group mb-5">
+
+        <input type="text" name = 'user' class="form-control" placeholder="Username">
+        <label for="birthday">From Date:</label>
+        <input type="date" name="s_date">
+        <label for="birthday">To Date:</label>
+        <input type="date" name="e_date">
+        <div class="input-group-append">
+          <button class="btn btn-success" type="submit">Go</button>
+        </div>
+      </div>
+    </form>
+    {% if report %}
+    
+      
+        <button class="btn btn-danger m-auto">Late: {{ late }}</button>
+        <button class="btn btn-success m-auto">Intime:{{ intime }}</button>
+     
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for i in report %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ i.user }}</td>
+            <td>{{ i.date }}</td>
+            <td {% if i.attendace_status == False %} class="btn btn-danger" {% else %} class="btn btn-success" {% endif %}>{{ i.attendace_status }}</td>
+          </tr>
+          {% endfor %}
+         
+        </tbody>
+      </table>
+    {% endif %}
+</div>
+{% endblock %}
