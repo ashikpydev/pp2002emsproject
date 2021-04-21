@@ -1,7 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  
+{% load has_group %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,9 +24,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'add-leave-form' %}">Leave Form</a>
             </li>
+            {% if request.user|has_group:"HR" %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'all_application' %}">All Application</a>
             </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'my_application' %}">My Application</a>
             </li>
@@ -34,10 +36,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'todolist' %}">ToDoList</a>
             </li>
+            {% if request.user|has_group:"HR" %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'add_employee' %}">Add Employee</a>
             </li>
-            
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'user_logout' %}">Logout</a>
             </li>

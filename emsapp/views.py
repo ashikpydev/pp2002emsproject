@@ -256,6 +256,8 @@ def add_employee(request):
             
             user = User.objects.create_user(username = username, password = password, first_name = first_name, last_name = last_name)
             profile = UserProfile.objects.create(user = user, department = department, email_address = email, designation = designation.name)
+            user.groups.add(designation)
+            user.save()
             form = UserForm()
             message = "Successfully Added!"
             status = 'success'
